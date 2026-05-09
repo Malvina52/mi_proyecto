@@ -1,0 +1,25 @@
+analisis_caso:
+  description: >
+    Analizar los hechos del caso e identificar los puntos de conflicto. 
+    Es OBLIGATORIO usar 'herramienta_busqueda_jurisprudencia_er' para buscar fallos 
+    del STJ de Entre Ríos que sienten precedentes sobre el tema.
+  expected_output: >
+    Informe con: 1. Puntos críticos. 2. Jurisprudencia entrerriana relevante (resumen).
+  agent: analista
+
+estrategia:
+  description: >
+    En base a la jurisprudencia encontrada por el analista, diseñar el camino procesal 
+    (ej. apelación, amparo). Decidir qué agravios son los más fuertes.
+  expected_output: >
+    Plan de acción con los 3 argumentos legales principales y los fallos a citar.
+  agent: estratega
+
+redaccion:
+  description: >
+    Escribir el documento judicial final. Usar lenguaje técnico pero claro. 
+    Asegurar que las citas de fallos de Entre Ríos sean precisas.
+  expected_output: >
+    Escrito judicial completo listo para firmar.
+  agent: redactor
+
