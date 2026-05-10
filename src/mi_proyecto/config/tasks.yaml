@@ -1,0 +1,26 @@
+analisis_caso:
+  description: >
+    1. Acceder al portal de Jurisprudencia de Entre Ríos mediante la secuencia de 6 pasos [1].
+    2. Filtrar por 'Cámaras de Apelaciones de los fueros civil y comercial' [2].
+    3. Extraer 50 fallos relevantes (desde 2014) y analizar tendencias: 32 de responsabilidad objetiva, 
+       45 de daño moral, 40 de daño material y 30 de gastos médicos [4-6].
+    4. Mantener datos disociados según Reglas de Heredia [3].
+  expected_output: >
+    Listado estructurado de 50 fallos con cuantificación de tendencias y doctrina.
+  agent: analista
+
+analisis_amparos_stj:
+  description: >
+    Extraer doctrina sobre temas de relevancia seleccionados por las Salas del STJ 
+    en materia de amparos, respetando las Reglas de Heredia [2, 3].
+  expected_output: >
+    Listado de precedentes de los 14,000 fallos completos disponibles.
+  agent: analista_amparos
+
+redaccion:
+  description: >
+    Redactar el documento final en HTML integrando el análisis de los 50 fallos, 
+    la doctrina del Fallo Nº 2345/2020 de Paraná y la certificación final [8-10].
+  expected_output: >
+    Un archivo HTML completo (estrategia_final.html) con la estructura oficial [4-6, 8-17].
+  agent: redactor
