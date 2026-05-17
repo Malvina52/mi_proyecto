@@ -1,0 +1,441 @@
+diff --git a/.gitignore b/.gitignore
+--- a/.gitignore
++++ b/.gitignore
+@@ -1 +1,16 @@
+-.env __pycache__/ .DS_Store
++.env
++.venv/
++__pycache__/
++*.py[cod]
++.DS_Store
++
++# Salidas locales
++output/
++*.log
++captcha_procesado.png
++
++# IDE
++.vscode/
++.idea/
++
++# Frontend
++node_modules/
+diff --git a/README.md b/README.md
+--- a/README.md
++++ b/README.md
+@@ -1,5 +1,78 @@
+-# MiProyecto Crew Welcome to the MiProyecto Crew project, powered by [crewAI](https://crewai.com). This template is designed to help you set up a multi-agent AI system with ease, leveraging the powerful and flexible framework provided by crewAI. Our goal is to enable your agents to collaborate effectively on complex tasks, maximizing their collective intelligence and capabilities. ## Installation Ensure you have Python >=3.10 <3.14 installed on your system.
+-This project uses [UV](https://docs.astral.sh/uv/) for dependency management and package handling, offering a seamless setup and execution experience.
+-First, if you haven't already, install uv: ```bash pip install uv ``` Next, navigate to your project directory and install the dependencies: (Optional) Lock the dependencies and install them by using the CLI command: ```bash crewai install ``` ### Customizing **Add your `OPENAI_API_KEY` into the `.env` file** - Modify `src/mi_proyecto/config/agents.yaml` to define your agents - Modify `src/mi_proyecto/config/tasks.yaml` to define your tasks - Modify `src/mi_proyecto/crew.py` to add your own logic, tools and specific args - Modify `src/mi_proyecto/main.py` to add custom inputs for your agents and tasks ## Running the Project To kickstart your crew of AI agents and begin task execution, run this from the root folder of your project: ```bash $ crewai run ``` This command initializes the mi_proyecto Crew, assembling the agents and assigning them tasks as defined in your configuration.
+-This example, unmodified, will run the create a `report.md` file with the output of a research on LLMs in the root folder. ## Understanding Your Crew The mi_proyecto Crew is composed of multiple AI agents, each with unique roles, goals, and tools. These agents collaborate on a series of tasks, defined in `config/tasks.yaml`, leveraging their collective skills to achieve complex objectives. The `config/agents.yaml` file outlines the capabilities and configurations of each agent in your crew.
+-## Support For support, questions, or feedback regarding the MiProyecto Crew or crewAI. - Visit our [documentation](https://docs.crewai.com) - Reach out to us through our [GitHub repository](https://github.com/joaomdmoura/crewai) - [Join our Discord](https://discord.com/invite/X4JWnZnxPb) - [Chat with our docs](https://chat.gpt/DWjSBZn) Let's create wonders together with the power and simplicity of crewAI.
++# Sistema Legal ER
++
++Proyecto experimental con CrewAI para analizar casos jurídicos, buscar jurisprudencia pública de Entre Ríos y generar una estrategia procesal preliminar.
++
++> Importante: este sistema no reemplaza el criterio profesional de una abogada o abogado. Sus respuestas deben ser revisadas antes de usarse en un expediente real.
++
++## Qué hace
++
++El flujo usa tres agentes:
++
++1. **Analista jurídico**: identifica hechos relevantes, conflictos y jurisprudencia relacionada.
++2. **Estratega procesal**: propone vías procesales y argumentos.
++3. **Redactor jurídico**: genera un borrador técnico del escrito.
++
++## Requisitos
++
++- Python `>=3.10,<3.14`
++- `uv`
++- Playwright
++- Una clave compatible con OpenAI/OpenRouter, según el proveedor usado
++
++## Instalación
++
++```bash
++pip install uv
++uv sync
++playwright install chromium
++```
++
++Crear un archivo `.env`:
++
++```env
++OPENROUTER_API_KEY=tu_clave
++```
++
++## Ejecución
++
++Con el caso de ejemplo:
++
++```bash
++crewai run
++```
++
++O directamente:
++
++```bash
++python -m mi_proyecto.main
++```
++
++También podés pasar un caso por variable de entorno:
++
++```bash
++CASO="Demanda por daños y perjuicios por accidente de tránsito en Paraná" crewai run
++```
++
++## Sobre la búsqueda de jurisprudencia
++
++La herramienta abre el portal público de jurisprudencia. Si aparece un CAPTCHA, debe resolverlo una persona. El proyecto no intenta evadir ni automatizar CAPTCHAs.
++
++## Estructura
++
++```text
++src/mi_proyecto/
++  crew.py
++  main.py
++  config/
++    agents.yaml
++    tasks.yaml
++  tools/
++    captcha_tool.py
++```
++
++## Próximas mejoras
++
++- Separar backend CrewAI y frontend React.
++- Agregar tests.
++- Guardar resultados en `output/`.
++- Agregar validación de entradas.
++- Documentar despliegue.
+diff --git a/pyproject.toml b/pyproject.toml
+--- a/pyproject.toml
++++ b/pyproject.toml
+@@ -1 +1,30 @@
+-[project] name = "mi_proyecto" version = "0.1.0" description = "mi_proyecto using crewAI" authors = [{ name = "Your Name", email = "you@example.com" }] requires-python = ">=3.10,<3.14" dependencies = [ "crewai[tools]==1.14.4", "easyocr>=1.7.2", "numpy>=2.2.6", "opencv-python>=4.13.0.92", "playwright>=1.59.0", ] [project.scripts] mi_proyecto = "mi_proyecto.main:run" run_crew = "mi_proyecto.main:run" train = "mi_proyecto.main:train" replay = "mi_proyecto.main:replay" test = "mi_proyecto.main:test" run_with_trigger = "mi_proyecto.main:run_with_trigger" [build-system] requires = ["hatchling"] build-backend = "hatchling.build" [tool.crewai] type = "crew"
++[project]
++name = "mi_proyecto"
++version = "0.1.0"
++description = "Sistema legal experimental con CrewAI para análisis jurídico y estrategia procesal"
++authors = [{ name = "Malvina52" }]
++requires-python = ">=3.10,<3.14"
++dependencies = [
++    "crewai[tools]==1.14.4",
++    "playwright>=1.59.0",
++    "python-dotenv>=1.0.1",
++]
++
++[project.scripts]
++mi_proyecto = "mi_proyecto.main:run"
++run_crew = "mi_proyecto.main:run"
++train = "mi_proyecto.main:train"
++replay = "mi_proyecto.main:replay"
++test = "mi_proyecto.main:test"
++run_with_trigger = "mi_proyecto.main:run_with_trigger"
++
++[build-system]
++requires = ["hatchling"]
++build-backend = "hatchling.build"
++
++[tool.crewai]
++type = "crew"
+diff --git a/src/mi_proyecto/crew.py b/src/mi_proyecto/crew.py
+--- a/src/mi_proyecto/crew.py
++++ b/src/mi_proyecto/crew.py
+@@ -1 +1,83 @@
+-from crewai import Agent, Crew, Process, Task, LLM from crewai.project import CrewBase, agent, crew, task from .tools.captcha_tool import buscar_jurisprudencia_publica @CrewBase class SistemaLegalER(): """Sistema jurídico inteligente de Entre Ríos""" agents_config = 'config/agents.yaml' tasks_config = 'config/tasks.yaml' def get_llm(self): return LLM( provider="openrouter", model="meta-llama/llama-3.3-70b-instruct", temperature=0.2 ) @agent def analista(self) -> Agent: return Agent( config=self.agents_config['analista'], tools=[buscar_jurisprudencia_publica], llm=self.get_llm(), verbose=True ) @agent def estratega(self) -> Agent: return Agent( config=self.agents_config['estratega'], llm=self.get_llm(), verbose=True, allow_delegation=True ) @agent def redactor(self) -> Agent: return Agent( config=self.agents_config['redactor'], llm=self.get_llm(), verbose=True ) @task def analisis_caso(self) -> Task: return Task( config=self.tasks_config['analisis_caso'], agent=self.analista() ) @task def estrategia(self) -> Task: return Task( config=self.tasks_config['estrategia'], agent=self.estratega() ) @task def redaccion(self) -> Task: return Task( config=self.tasks_config['redaccion'], agent=self.redactor() ) @crew def crew(self) -> Crew: return Crew( agents=self.agents, tasks=self.tasks, process=Process.sequential, verbose=True )
++from crewai import Agent, Crew, LLM, Process, Task
++from crewai.project import CrewBase, agent, crew, task
++
++from .tools.captcha_tool import buscar_jurisprudencia_publica
++
++
++@CrewBase
++class SistemaLegalER:
++    """Sistema jurídico inteligente de Entre Ríos."""
++
++    agents_config = "config/agents.yaml"
++    tasks_config = "config/tasks.yaml"
++
++    def get_llm(self) -> LLM:
++        """Configura el modelo de lenguaje usado por los agentes."""
++        return LLM(
++            provider="openrouter",
++            model="meta-llama/llama-3.3-70b-instruct",
++            temperature=0.2,
++        )
++
++    @agent
++    def analista(self) -> Agent:
++        return Agent(
++            config=self.agents_config["analista"],
++            tools=[buscar_jurisprudencia_publica],
++            llm=self.get_llm(),
++            verbose=True,
++        )
++
++    @agent
++    def estratega(self) -> Agent:
++        return Agent(
++            config=self.agents_config["estratega"],
++            llm=self.get_llm(),
++            verbose=True,
++            allow_delegation=False,
++        )
++
++    @agent
++    def redactor(self) -> Agent:
++        return Agent(
++            config=self.agents_config["redactor"],
++            llm=self.get_llm(),
++            verbose=True,
++        )
++
++    @task
++    def analisis_caso(self) -> Task:
++        return Task(
++            config=self.tasks_config["analisis_caso"],
++            agent=self.analista(),
++        )
++
++    @task
++    def estrategia(self) -> Task:
++        return Task(
++            config=self.tasks_config["estrategia"],
++            agent=self.estratega(),
++        )
++
++    @task
++    def redaccion(self) -> Task:
++        return Task(
++            config=self.tasks_config["redaccion"],
++            agent=self.redactor(),
++            output_file="output/escrito_juridico.md",
++        )
++
++    @crew
++    def crew(self) -> Crew:
++        return Crew(
++            agents=self.agents,
++            tasks=self.tasks,
++            process=Process.sequential,
++            verbose=True,
++        )
+diff --git a/src/mi_proyecto/main.py b/src/mi_proyecto/main.py
+--- a/src/mi_proyecto/main.py
++++ b/src/mi_proyecto/main.py
+@@ -1 +1,62 @@
+-from mi_proyecto.crew import SistemaLegalER def run(): """ Punto de entrada para el flujo de elevada autonomía (Nivel 5). """ inputs = { 'caso': 'Demanda por daños y perjuicios por accidente de tránsito en Paraná, Entre Ríos. El cliente fue embestido desde atrás en un semáforo.' } # Iniciamos la tripulación de forma autónoma SistemaLegalER().crew().kickoff(inputs=inputs) if __name__ == "__main__": run()
++import os
++from pathlib import Path
++
++from dotenv import load_dotenv
++
++from mi_proyecto.crew import SistemaLegalER
++
++
++CASO_DE_EJEMPLO = (
++    "Demanda por daños y perjuicios por accidente de tránsito en Paraná, "
++    "Entre Ríos. El cliente fue embestido desde atrás en un semáforo."
++)
++
++
++def _crear_directorio_output() -> None:
++    Path("output").mkdir(exist_ok=True)
++
++
++def run() -> None:
++    """Punto de entrada principal del sistema."""
++    load_dotenv()
++    _crear_directorio_output()
++
++    caso = os.getenv("CASO", CASO_DE_EJEMPLO)
++    inputs = {"caso": caso}
++
++    resultado = SistemaLegalER().crew().kickoff(inputs=inputs)
++    print(resultado)
++
++
++def train() -> None:
++    """Placeholder requerido por el template de CrewAI."""
++    raise NotImplementedError("Entrenamiento no implementado en este proyecto.")
++
++
++def replay() -> None:
++    """Placeholder requerido por el template de CrewAI."""
++    raise NotImplementedError("Replay no implementado en este proyecto.")
++
++
++def test() -> None:
++    """Placeholder requerido por el template de CrewAI."""
++    run()
++
++
++def run_with_trigger() -> None:
++    """Compatibilidad con integraciones externas."""
++    run()
++
++
++if __name__ == "__main__":
++    run()
+diff --git a/src/mi_proyecto/config/agents.yaml b/src/mi_proyecto/config/agents.yaml
+--- a/src/mi_proyecto/config/agents.yaml
++++ b/src/mi_proyecto/config/agents.yaml
+@@ -1,2 +1,26 @@
+-redactor: role: Redactor Jurídico goal: Redactar escritos judiciales claros, sólidos y bien fundamentados backstory: Abogado experto en derecho procesal argentino, especializado en redacción técnica. analista: role: Analista Jurídico goal: Analizar casos, detectar errores judiciales y construir agravios backstory: Especialista en análisis jurisprudencial y doctrina.
+-estratega: role: Estratega Procesal goal: Diseñar la mejor estrategia legal posible para cada caso backstory: Experto en litigio estratégico y toma de decisiones procesales.
++analista:
++  role: Analista Jurídico
++  goal: >
++    Analizar el caso, identificar hechos relevantes, detectar puntos débiles
++    y buscar jurisprudencia pública relacionada de Entre Ríos.
++  backstory: >
++    Especialista en análisis jurisprudencial, doctrina y razonamiento jurídico.
++    Trabaja con prudencia, diferencia hechos de inferencias y advierte cuando
++    una cita debe ser verificada por una persona profesional.
++
++estratega:
++  role: Estratega Procesal
++  goal: >
++    Diseñar una estrategia procesal clara, realista y priorizada para el caso.
++  backstory: >
++    Experto en litigio estratégico, recursos, agravios y toma de decisiones
++    procesales en el sistema jurídico argentino.
++
++redactor:
++  role: Redactor Jurídico
++  goal: >
++    Redactar escritos judiciales claros, sólidos y bien estructurados.
++  backstory: >
++    Abogado experto en derecho procesal argentino, especializado en redacción
++    técnica. Prioriza claridad, precisión, orden argumental y advertencias
++    sobre puntos que requieren revisión humana.
+diff --git a/src/mi_proyecto/config/tasks.yaml b/src/mi_proyecto/config/tasks.yaml
+--- a/src/mi_proyecto/config/tasks.yaml
++++ b/src/mi_proyecto/config/tasks.yaml
+@@ -1,2 +1,46 @@
+-analisis_caso: description: > Analizar los hechos del caso e identificar los puntos de conflicto. Es OBLIGATORIO usar 'herramienta_busqueda_jurisprudencia_er' para buscar fallos del STJ de Entre Ríos que sienten precedentes sobre el tema. expected_output: > Informe con: 1. Puntos críticos. 2. Jurisprudencia entrerriana relevante (resumen). agent: analista estrategia: description: > En base a la jurisprudencia encontrada por el analista, diseñar el camino procesal (ej. apelación, amparo).
+-Decidir qué agravios son los más fuertes. expected_output: > Plan de acción con los 3 argumentos legales principales y los fallos a citar. agent: estratega redaccion: description: > Escribir el documento judicial final. Usar lenguaje técnico pero claro. Asegurar que las citas de fallos de Entre Ríos sean precisas. expected_output: > Escrito judicial completo listo para firmar. agent: redactor
++analisis_caso:
++  description: >
++    Analizar el siguiente caso: {caso}
++
++    Identificar hechos relevantes, pretensiones posibles, puntos de conflicto,
++    prueba necesaria y riesgos. Usar la herramienta
++    'herramienta_busqueda_jurisprudencia_er' para consultar jurisprudencia
++    pública relacionada cuando sea útil.
++
++    No inventar fallos. Si la información recuperada es insuficiente, indicarlo.
++  expected_output: >
++    Informe jurídico preliminar con:
++    1. Resumen del caso.
++    2. Hechos jurídicamente relevantes.
++    3. Problemas jurídicos.
++    4. Jurisprudencia encontrada o advertencia de falta de resultados.
++    5. Riesgos y puntos a verificar.
++  agent: analista
++
++estrategia:
++  description: >
++    Con base en el análisis del caso y la jurisprudencia disponible, diseñar
++    una estrategia procesal. Priorizar argumentos fuertes y separar argumentos
++    principales de subsidiarios.
++  expected_output: >
++    Plan de acción con:
++    1. Vía procesal recomendada.
++    2. Tres argumentos principales.
++    3. Prueba necesaria.
++    4. Riesgos procesales.
++    5. Citas o referencias que deben verificarse.
++  agent: estratega
++
++redaccion:
++  description: >
++    Redactar un borrador de escrito judicial basado en el análisis y la
++    estrategia. Usar lenguaje técnico, claro y prudente.
++
++    No presentar el texto como listo para firmar sin revisión profesional.
++  expected_output: >
++    Borrador de escrito judicial con:
++    1. Encabezado orientativo.
++    2. Objeto.
++    3. Hechos.
++    4. Derecho.
++    5. Prueba.
++    6. Petitorio.
++    7. Advertencias de revisión profesional.
++  agent: redactor
+diff --git a/src/mi_proyecto/tools/captcha_tool.py b/src/mi_proyecto/tools/captcha_tool.py
+--- a/src/mi_proyecto/tools/captcha_tool.py
++++ b/src/mi_proyecto/tools/captcha_tool.py
+@@ -1,4 +1,73 @@
+-import easyocr import time import tempfile import os import cv2 import numpy as np from playwright.sync_api import sync_playwright from crewai.tools import tool @tool("herramienta_busqueda_jurisprudencia_er") def buscar_jurisprudencia_publica(termino: str) -> str: """ Busca jurisprudencia en el portal de Entre Ríos. Resuelve el captcha automáticamente mediante filtros de imagen avanzados y simulación de teclado físico para asegurar el ingreso.
+-""" reader = easyocr.Reader(['en']) with sync_playwright() as p: # Navegador visible para supervisión humana (HITL) browser = p.chromium.launch(headless=False) context = browser.new_context() page = context.new_page() try: page.goto("https://jur.jusentrerios.gov.ar/jur/?ai=jur||newpublica") page.wait_for_load_state("networkidle") time.sleep(3) # Espera a que el captcha termine de renderizar captcha_resuelto = False # Bucle de resiliencia: hasta 3 intentos para resolver el captcha for intento in range(3): try: # Localizar y esperar el captcha captcha_element = page.locator("img[src*='mostrar_captchas_efs']").first captcha_element.wait_for(state="visible", timeout=30000) time.sleep(2) # Espera extra para que la imagen cargue completamente # --- OPTIMIZACIÓN DE IMAGEN --- captcha_bytes = captcha_element.screenshot() nparr = np.frombuffer(captcha_bytes, np.uint8) img = cv2.imdecode(nparr, cv2.IMREAD_COLOR) # Filtros para mejorar precisión del OCR gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY) _, thresh = cv2.threshold(gray, 180, 255, cv2.THRESH_BINARY_INV) denoised = cv2.fastNlMeansDenoising(thresh, None, 10, 7, 21) # Guardamos en archivo temporal para auditoría with tempfile.NamedTemporaryFile(suffix=".png", delete=False) as tmp: ruta_captcha = tmp.name cv2.imwrite(ruta_captcha, denoised) # Lectura OCR resultado_ocr = reader.readtext(ruta_captcha, detail=0) os.unlink(ruta_captcha) # Limpiamos el archivo temporal texto_captcha = ''.join(resultado_ocr).upper().replace(' ', '').strip() print(f"Captcha leído: '{texto_captcha}'") # Para verificar en consola # Validación: no intentar enviar si el OCR no leyó nada if not texto_captcha: raise ValueError("OCR no pudo leer el captcha.") # --- ESCRITURA DEL CAPTCHA --- campo_texto = page.locator("input[name='captcha_form']").first campo_texto.wait_for(state="visible", timeout=10000) # Clic para asegurar el foco en el campo campo_texto.click() time.sleep(0.5) # Pausa antes de empezar a escribir # Escritura carácter por carácter como un humano page.keyboard.type(texto_captcha, delay=200) time.sleep(0.5) # Pausa antes de confirmar # Presionar Enter para confirmar page.keyboard.press("Enter") # Verificamos si el captcha fue superado page.wait_for_selector("input[name='sumario']", timeout=10000) captcha_resuelto = True break # Éxito: salimos del bucle except Exception as e: print(f"Intento {intento + 1} fallido: {e}.
+-Reintentando...") time.sleep(2) # Pausa antes de reintentar continue # Salvaguarda: si no se resolvió el captcha, requerir intervención humana if not captcha_resuelto or not page.locator("input[name='sumario']").is_visible(): return "Error: CAPTCHA no superado tras 3 intentos.
+-Requiere supervisión de editor calificado (HITL)." # --- EJECUCIÓN FINAL: búsqueda del término --- page.locator("input[name='sumario']").fill(termino) page.keyboard.press("Enter") page.wait_for_load_state("networkidle") contenido = page.inner_text("body") return contenido finally: # Garantizamos el cierre del navegador pase lo que pase browser.close()
++from __future__ import annotations
++
++from crewai.tools import tool
++from playwright.sync_api import TimeoutError as PlaywrightTimeoutError
++from playwright.sync_api import sync_playwright
++
++
++PORTAL_JURISPRUDENCIA_ER = "https://jur.jusentrerios.gov.ar/jur/?ai=jur||newpublica"
++
++
++def _recortar_texto(texto: str, limite: int = 6000) -> str:
++    texto = " ".join(texto.split())
++    if len(texto) <= limite:
++        return texto
++    return texto[:limite] + "... [contenido recortado]"
++
++
++@tool("herramienta_busqueda_jurisprudencia_er")
++def buscar_jurisprudencia_publica(termino: str) -> str:
++    """
++    Busca jurisprudencia en el portal público de Entre Ríos.
++
++    Seguridad:
++    - No resuelve CAPTCHAs automáticamente.
++    - Si el sitio solicita CAPTCHA, el navegador queda visible para que lo
++      resuelva una persona.
++    - Devuelve texto resumido de la página para que el agente lo analice.
++    """
++    if not termino or not termino.strip():
++        return "No se recibió un término de búsqueda válido."
++
++    termino = termino.strip()
++
++    with sync_playwright() as p:
++        browser = p.chromium.launch(headless=False)
++        context = browser.new_context()
++        page = context.new_page()
++
++        try:
++            page.goto(PORTAL_JURISPRUDENCIA_ER, wait_until="networkidle", timeout=60000)
++
++            try:
++                campo_sumario = page.locator("input[name='sumario']").first
++                campo_sumario.wait_for(state="visible", timeout=15000)
++            except PlaywrightTimeoutError:
++                return (
++                    "El portal no mostró el campo de búsqueda. "
++                    "Puede requerir CAPTCHA o intervención manual. "
++                    "Abrí el navegador visible, resolvé el paso solicitado y "
++                    "volvé a ejecutar la búsqueda."
++                )
++
++            campo_sumario.fill(termino)
++            page.keyboard.press("Enter")
++            page.wait_for_load_state("networkidle", timeout=60000)
++
++            contenido = page.inner_text("body")
++            return _recortar_texto(contenido)
++
++        except Exception as exc:
++            return (
++                "No se pudo completar la búsqueda de jurisprudencia. "
++                f"Detalle técnico: {type(exc).__name__}: {exc}"
++            )
++        finally:
++            browser.close()
